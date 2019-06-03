@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WpfEverNoteApp.Model;
 
 namespace WpfEverNoteApp.ViewModel.Commands
 {
@@ -19,12 +20,17 @@ namespace WpfEverNoteApp.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            //jesli wybrany jakis notatnik
+            if (parameter != null)
+                return true;
+
+            return false;
         }
 
         public void Execute(object parameter)
         {
-            //TODO: Nowa notatka
+            Notebook selectedNotebook = parameter as Notebook;
+            VM.CreateNote(selectedNotebook.Id);
         }
 
     }

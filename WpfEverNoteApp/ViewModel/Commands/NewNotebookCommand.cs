@@ -24,7 +24,7 @@ namespace WpfEverNoteApp.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            //TODO: Nowy notatnik
+            VM.CreateNotebook();
         }
     }
 }
