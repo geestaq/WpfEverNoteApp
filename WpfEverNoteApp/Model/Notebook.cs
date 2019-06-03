@@ -8,7 +8,7 @@ using SQLite;
 
 namespace WpfEverNoteApp.Model
 {
-    class Notebook : INotifyPropertyChanged
+    public class Notebook : INotifyPropertyChanged
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

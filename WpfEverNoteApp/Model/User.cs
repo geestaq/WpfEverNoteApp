@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WpfEverNoteApp.Model
 {
-    class User : INotifyPropertyChanged
+    public class User : INotifyPropertyChanged
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
