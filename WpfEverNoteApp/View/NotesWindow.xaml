@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfEverNoteApp.View"
         xmlns:vm="clr-namespace:WpfEverNoteApp.ViewModel"
+        xmlns:uc="clr-namespace:WpfEverNoteApp.View.UserControls"
         mc:Ignorable="d"
         Title="NotesWindow" Height="450" Width="800">
 
@@ -30,17 +31,23 @@
         </StatusBar>
         <ListView DockPanel.Dock="Left"
                   Width="140"
+                  Background="MidnightBlue"
                   ItemsSource="{Binding Notebooks}"
                   SelectedItem="{Binding SelectedNotebook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <uc:NotebookControl DisplayNotebook="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <ListView DockPanel.Dock="Left"
                   Width="140"
                   ItemsSource="{Binding Notes}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <uc:NoteControl Note="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
         </ListView>
         <ToolBarTray DockPanel.Dock="Top">

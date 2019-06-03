@@ -21,7 +21,7 @@ namespace WpfEverNoteApp.ViewModel
             set
             {
                 selectedNotebook = value;
-                //TODO: Pobranie notatek
+                ReadNotes();
             }
         }
 
@@ -40,6 +40,7 @@ namespace WpfEverNoteApp.ViewModel
 
             CreateTables();
             ReadNotebooks();
+            ReadNotes();
         }
 
         /// <summary>
@@ -65,6 +66,8 @@ namespace WpfEverNoteApp.ViewModel
             };
 
             DatabaseHelper.Insert(newNote);
+
+            ReadNotes();
         }
 
         public void CreateNotebook()
@@ -75,6 +78,8 @@ namespace WpfEverNoteApp.ViewModel
             };
 
             DatabaseHelper.Insert(newNotebook);
+
+            ReadNotebooks();
         }
 
         public void ReadNotebooks()
