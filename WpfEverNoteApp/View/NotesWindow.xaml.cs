@@ -28,5 +28,16 @@ namespace WpfEverNoteApp.View
         {
             Application.Current.Shutdown();
         }
+
+        private void ContentRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int charsCount = (new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd)).Text.Length;
+            statusTextBlock.Text = $"Document length: {charsCount}";
+        }
+
+        private void BoldBtn_Click(object sender, RoutedEventArgs e)
+        {
+            contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Bold);
+        }
     }
 }

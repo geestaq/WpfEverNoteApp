@@ -34,6 +34,24 @@ namespace WpfEverNoteApp.ViewModel
         {
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
+
+            Notebooks = new ObservableCollection<Notebook>();
+            Notes = new ObservableCollection<Note>();
+
+            CreateTables();
+            ReadNotebooks();
+        }
+
+        /// <summary>
+        /// Tworzy tabele w bazie danych
+        /// </summary>
+        private void CreateTables()
+        {
+            using (SQLite.SQLiteConnection cn = new SQLite.SQLiteConnection(DatabaseHelper.dbFile))
+            {
+                cn.CreateTable<Notebook>();
+                cn.CreateTable<Note>();
+            }
         }
 
         public void CreateNote(int notebookId)
@@ -57,6 +75,37 @@ namespace WpfEverNoteApp.ViewModel
             };
 
             DatabaseHelper.Insert(newNotebook);
+        }
+
+        public void ReadNotebooks()
+        {
+            using (SQLite.SQLiteConnection cn = new SQLite.SQLiteConnection(DatabaseHelper.dbFile))
+            {
+                var notebooks = cn.Table<Notebook>().ToList();
+
+                Notebooks.Clear();
+                foreach (var item in notebooks)
+                {
+                    Notebooks.Add(item);
+                }
+            }
+        }
+
+        public void ReadNotes()
+        {
+            using (SQLite.SQLiteConnection cn = new SQLite.SQLiteConnection(DatabaseHelper.dbFile))
+            {
+                if(SelectedNotebook != null)
+                {
+                    var notes = cn.Table<Note>().Where(x => x.NotebookId == SelectedNotebook.Id).ToList();
+
+                    Notes.Clear();
+                    foreach (var item in notes)
+                    {
+                        Notes.Add(item);
+                    }
+                }
+            }
         }
     }
 }
