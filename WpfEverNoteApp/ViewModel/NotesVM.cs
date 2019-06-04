@@ -11,6 +11,8 @@ namespace WpfEverNoteApp.ViewModel
 {
     public class NotesVM
     {
+        public bool IsNotebookEditing { get; set; }
+
         public ObservableCollection<Notebook> Notebooks { get; set; }
 
         private Notebook selectedNotebook;
@@ -32,6 +34,8 @@ namespace WpfEverNoteApp.ViewModel
 
         public NotesVM()
         {
+            IsNotebookEditing = false;
+
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
 
@@ -44,7 +48,7 @@ namespace WpfEverNoteApp.ViewModel
         }
 
         /// <summary>
-        /// Tworzy tabele w bazie danych
+        /// Tworzy potrzebne tabele w bazie danych
         /// </summary>
         private void CreateTables()
         {
@@ -74,7 +78,8 @@ namespace WpfEverNoteApp.ViewModel
         {
             Notebook newNotebook = new Notebook()
             {
-                Name = "New notebook"
+                Name = "New notebook",
+                UserId = int.Parse(App.UserId)
             };
 
             DatabaseHelper.Insert(newNotebook);
@@ -87,6 +92,7 @@ namespace WpfEverNoteApp.ViewModel
             using (SQLite.SQLiteConnection cn = new SQLite.SQLiteConnection(DatabaseHelper.dbFile))
             {
                 var notebooks = cn.Table<Notebook>().ToList();
+                //TODO: pobieranie notatnikow dla zalogowanego usera
 
                 Notebooks.Clear();
                 foreach (var item in notebooks)

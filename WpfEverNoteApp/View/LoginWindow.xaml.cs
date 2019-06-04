@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfEverNoteApp.ViewModel;
 
 namespace WpfEverNoteApp.View
 {
@@ -22,6 +23,29 @@ namespace WpfEverNoteApp.View
         public LoginWindow()
         {
             InitializeComponent();
+
+            LoginVM vm = new LoginVM();
+            containerGrid.DataContext = vm;
+            
+            //obsluga eventu zalogowania
+            vm.HasLoggedIn += Vm_HasLoggedIn;
+        }
+
+        private void Vm_HasLoggedIn(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void HaveAccountBtn_Click(object sender, RoutedEventArgs e)
+        {
+            registerStackPanel.Visibility = Visibility.Collapsed;
+            loginStackPanel.Visibility = Visibility.Visible;
+        }
+
+        private void RegisterAccountBtn_Click(object sender, RoutedEventArgs e)
+        {
+            registerStackPanel.Visibility = Visibility.Visible;
+            loginStackPanel.Visibility = Visibility.Collapsed;
         }
     }
 }

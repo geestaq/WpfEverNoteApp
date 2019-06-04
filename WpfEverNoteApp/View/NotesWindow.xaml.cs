@@ -51,5 +51,16 @@ namespace WpfEverNoteApp.View
             var selectedState = contentRichTextBox.Selection.GetPropertyValue(Inline.FontWeightProperty);
             boldBtn.IsChecked = (selectedState != DependencyProperty.UnsetValue) && (selectedState.Equals(FontWeights.Bold));
         }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+
+            if(string.IsNullOrEmpty(App.UserId))
+            {
+                var loginWindow = new LoginWindow();
+                loginWindow.ShowDialog();
+            }
+        }
     }
 }

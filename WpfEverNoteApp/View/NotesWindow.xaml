@@ -11,6 +11,7 @@
 
     <Window.Resources>
         <vm:NotesVM x:Key="vm"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     </Window.Resources>
     <DockPanel DataContext="{StaticResource vm}">
         <Menu DockPanel.Dock="Top">
@@ -36,7 +37,16 @@
                   SelectedItem="{Binding SelectedNotebook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:NotebookControl DisplayNotebook="{Binding}"/>
+                    <Grid>
+                        <uc:NotebookControl DisplayNotebook="{Binding}"/>
+                        <TextBox Text="{Binding Name, Mode=TwoWay}"
+                                 Visibility="{Binding Source={StaticResource vm}, Path=IsNotebookEditing, Converter={StaticResource BoolToVisConverter}}"/>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Rename"/>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
