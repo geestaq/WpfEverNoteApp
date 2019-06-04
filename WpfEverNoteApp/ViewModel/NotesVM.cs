@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WpfEverNoteApp.Model;
@@ -9,9 +11,20 @@ using WpfEverNoteApp.ViewModel.Commands;
 
 namespace WpfEverNoteApp.ViewModel
 {
-    public class NotesVM
+    public class NotesVM : INotifyPropertyChanged
     {
-        public bool IsNotebookEditing { get; set; }
+        private bool isNotebookEditing;
+
+        public bool IsNotebookEditing
+        {
+            get { return isNotebookEditing; }
+            set
+            {
+                isNotebookEditing = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public ObservableCollection<Notebook> Notebooks { get; set; }
 
@@ -31,6 +44,10 @@ namespace WpfEverNoteApp.ViewModel
 
         public NewNotebookCommand NewNotebookCommand { get; set; }
         public NewNoteCommand NewNoteCommand { get; set; }
+        public BeginEditCommand BeginEditCommand { get; set; }
+        public RenameNotebookCommand RenameNotebookCommand { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public NotesVM()
         {
@@ -38,6 +55,8 @@ namespace WpfEverNoteApp.ViewModel
 
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
+            BeginEditCommand = new BeginEditCommand(this);
+            RenameNotebookCommand = new RenameNotebookCommand(this);
 
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
@@ -45,6 +64,11 @@ namespace WpfEverNoteApp.ViewModel
             CreateTables();
             ReadNotebooks();
             ReadNotes();
+        }
+
+        public void OnPropertyChanged([CallerMemberName] string properyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(properyName));
         }
 
         /// <summary>
@@ -118,5 +142,21 @@ namespace WpfEverNoteApp.ViewModel
                 }
             }
         }
+
+        public void StartEditing()
+        {
+            IsNotebookEditing = true;
+        }
+
+        public void RenameNotebook(Notebook item)
+        {
+            if(item != null)
+            {
+                DatabaseHelper.Update(item);
+                IsNotebookEditing = false;
+                ReadNotebooks();
+            }
+        }
+
     }
 }
