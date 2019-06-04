@@ -35,6 +35,7 @@ namespace WpfEverNoteApp.View
 
         private void VM_SelectedNoteChanged(object sender, EventArgs e)
         {
+            contentRichTextBox.Document.Blocks.Clear();
             if(!string.IsNullOrEmpty(VM.SelectedNote.FileLocation))
             {
                 FileStream fs = new FileStream(VM.SelectedNote.FileLocation, FileMode.Open);
