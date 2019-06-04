@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfEverNoteApp.ViewModel;
 
 namespace WpfEverNoteApp.View
 {
@@ -20,9 +22,25 @@ namespace WpfEverNoteApp.View
     /// </summary>
     public partial class NotesWindow : Window
     {
+        NotesVM VM;
         public NotesWindow()
         {
             InitializeComponent();
+
+            VM = new NotesVM();
+            container.DataContext = VM;
+
+            VM.SelectedNoteChanged += VM_SelectedNoteChanged;
+        }
+
+        private void VM_SelectedNoteChanged(object sender, EventArgs e)
+        {
+            if(!string.IsNullOrEmpty(VM.SelectedNote.FileLocation))
+            {
+                FileStream fs = new FileStream(VM.SelectedNote.FileLocation, FileMode.Open);
+                TextRange range = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd);
+                range.Load(fs, DataFormats.Rtf);
+            }
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -61,6 +79,19 @@ namespace WpfEverNoteApp.View
                 var loginWindow = new LoginWindow();
                 loginWindow.ShowDialog();
             }
+        }
+
+        private void SaveFileBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string rtfFile = System.IO.Path.Combine(VM.NotesPath, $"{VM.SelectedNote.Id}.rtf");
+            VM.SelectedNote.FileLocation = rtfFile;
+
+            FileStream fs = new FileStream(VM.SelectedNote.FileLocation, FileMode.Create);
+            TextRange range = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd);
+            range.Save(fs, DataFormats.Rtf);
+
+            VM.UpdateSelectedNote();
+
         }
     }
 }

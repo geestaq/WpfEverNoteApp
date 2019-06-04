@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,6 +14,8 @@ namespace WpfEverNoteApp.ViewModel
 {
     public class NotesVM : INotifyPropertyChanged
     {
+        public string NotesPath => Path.Combine(Environment.CurrentDirectory, "notes");
+
         private bool isNotebookEditing;
 
         public bool IsNotebookEditing
@@ -40,6 +43,19 @@ namespace WpfEverNoteApp.ViewModel
             }
         }
 
+        private Note selectedNote;
+
+        public Note SelectedNote
+        {
+            get { return selectedNote; }
+            set
+            {
+                selectedNote = value;
+                SelectedNoteChanged(this, new EventArgs());
+            }
+        }
+
+
         public ObservableCollection<Note> Notes { get; set; }
 
         public NewNotebookCommand NewNotebookCommand { get; set; }
@@ -48,6 +64,8 @@ namespace WpfEverNoteApp.ViewModel
         public RenameNotebookCommand RenameNotebookCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public event EventHandler SelectedNoteChanged;
 
         public NotesVM()
         {
@@ -73,6 +91,7 @@ namespace WpfEverNoteApp.ViewModel
 
         /// <summary>
         /// Tworzy potrzebne tabele w bazie danych
+        /// Tworzy folder do zapisu tresci notatek
         /// </summary>
         private void CreateTables()
         {
@@ -81,6 +100,10 @@ namespace WpfEverNoteApp.ViewModel
                 cn.CreateTable<Notebook>();
                 cn.CreateTable<Note>();
             }
+
+            //utworzenie folderu na notatki
+            if (!Directory.Exists(NotesPath))
+                Directory.CreateDirectory(NotesPath);
         }
 
         public void CreateNote(int notebookId)
@@ -156,6 +179,11 @@ namespace WpfEverNoteApp.ViewModel
                 IsNotebookEditing = false;
                 ReadNotebooks();
             }
+        }
+
+        public void UpdateSelectedNote()
+        {
+            DatabaseHelper.Update(SelectedNote);
         }
 
     }
